@@ -2,96 +2,248 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏁 Real Car Game - Play with Buttons!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🏁 MULTIPLAYER CAR RACING - Create & Join Rooms</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             user-select: none;
+            font-family: 'Arial', sans-serif;
         }
 
         body {
             background: linear-gradient(135deg, #0a0f1e, #1a1f2e);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            font-family: 'Arial', sans-serif;
-            padding: 20px;
+            padding: 15px;
         }
 
-        .game-container {
+        .game-wrapper {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Menu Screen */
+        .menu-screen {
             background: #16213e;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-            border: 2px solid #e94560;
-        }
-
-        .game-header {
+            border-radius: 30px;
+            padding: 40px 30px;
+            border: 4px solid #e94560;
+            box-shadow: 0 30px 50px rgba(0,0,0,0.8);
             text-align: center;
-            margin-bottom: 20px;
+            animation: slideIn 0.5s ease;
         }
 
-        .game-header h1 {
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .logo {
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
             color: #e94560;
-            font-size: 2.5em;
-            text-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
-            margin-bottom: 10px;
+            font-size: 3em;
+            text-shadow: 0 0 20px rgba(233, 69, 96, 0.7);
+            letter-spacing: 3px;
         }
 
-        .score-board {
+        .logo p {
+            color: #a0a0a0;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+
+        .menu-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .menu-btn {
+            background: #0f3460;
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 50px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            border-bottom: 5px solid #e94560;
+            transition: all 0.2s ease;
+            min-width: 200px;
+        }
+
+        .menu-btn.secondary {
+            background: #e94560;
+            border-bottom-color: #8b2c3e;
+        }
+
+        .menu-btn:active {
+            transform: translateY(5px);
+            border-bottom-width: 0;
+        }
+
+        .room-input {
+            background: #0f3460;
+            padding: 20px;
+            border-radius: 20px;
+            margin-top: 20px;
+        }
+
+        .room-input h3 {
+            color: #e94560;
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .input-group input {
+            background: #1a1f2e;
+            border: 2px solid #e94560;
+            padding: 15px 20px;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.1em;
+            width: 200px;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #ff6b81;
+            box-shadow: 0 0 15px rgba(233,69,96,0.5);
+        }
+
+        .input-group button {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            border-bottom: 4px solid #8b2c3e;
+            font-size: 1.1em;
+        }
+
+        .input-group button:active {
+            transform: translateY(4px);
+            border-bottom-width: 0;
+        }
+
+        /* Room Screen */
+        .room-screen {
+            background: #16213e;
+            border-radius: 30px;
+            padding: 20px;
+            border: 4px solid #e94560;
+            display: none;
+        }
+
+        .room-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: #0f3460;
-            padding: 15px;
-            border-radius: 10px;
-            color: white;
-            font-size: 1.2em;
-            margin-bottom: 15px;
+            padding: 15px 20px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        .score, .high-score {
+        .room-info {
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .room-info span {
+            color: #e94560;
+            font-weight: bold;
+            background: #1a1f2e;
+            padding: 5px 15px;
+            border-radius: 25px;
+            margin-left: 10px;
+        }
+
+        .player-list {
+            display: flex;
+            gap: 20px;
+            color: white;
+        }
+
+        .player {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             background: #1a1f2e;
             padding: 8px 20px;
-            border-radius: 5px;
-            border-left: 3px solid #e94560;
+            border-radius: 25px;
+            border-left: 4px solid #e94560;
+        }
+
+        .player-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #e94560;
+        }
+
+        .player-dot.player2 {
+            background: #4ecdc4;
+        }
+
+        .waiting-message {
+            text-align: center;
+            color: #a0a0a0;
+            padding: 30px;
+            font-size: 1.2em;
         }
 
         .game-area {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            display: none;
         }
 
         canvas {
             background: #1e272e;
-            border-radius: 10px;
-            border: 3px solid #e94560;
-            box-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
-            display: block;
-            cursor: none;
+            border-radius: 20px;
+            border: 4px solid #e94560;
+            box-shadow: 0 0 30px rgba(233, 69, 96, 0.5);
+            width: 100%;
+            height: auto;
+            touch-action: none;
         }
 
         .controls-info {
             display: flex;
             justify-content: space-between;
-            width: 100%;
-            margin: 20px 0;
+            margin-top: 20px;
             gap: 20px;
+            flex-wrap: wrap;
         }
 
-        .keyboard-controls {
+        .control-box {
             background: #0f3460;
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 20px;
             flex: 1;
+            min-width: 200px;
         }
 
-        .keyboard-controls h3 {
+        .control-box h3 {
             color: #e94560;
             margin-bottom: 10px;
             text-align: center;
@@ -107,7 +259,6 @@
         .key-row {
             display: flex;
             gap: 5px;
-            justify-content: center;
         }
 
         .key {
@@ -121,199 +272,218 @@
             border-radius: 10px;
             font-weight: bold;
             border: 2px solid #e94560;
-            box-shadow: 0 4px 0 #8b2c3e;
         }
 
         .touch-controls {
-            background: #0f3460;
-            padding: 15px;
-            border-radius: 10px;
-            flex: 2;
-        }
-
-        .touch-controls h3 {
-            color: #e94560;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .control-buttons {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 10px;
+            max-width: 250px;
+            margin: 0 auto;
         }
 
-        .control-row {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-
-        .control-btn {
+        .touch-btn {
             background: #1a1f2e;
             color: white;
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
             border: 3px solid #e94560;
+            border-radius: 15px;
+            padding: 15px;
             font-size: 1.5em;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 6px 0 #8b2c3e;
-            transition: all 0.1s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             touch-action: manipulation;
-        }
-
-        .control-btn:active {
-            transform: translateY(6px);
-            box-shadow: 0 0 0 #8b2c3e;
-        }
-
-        .control-btn.special {
-            background: #e94560;
-            color: white;
-            border-color: white;
-        }
-
-        .game-status {
-            margin-top: 15px;
+            aspect-ratio: 1;
             display: flex;
-            gap: 20px;
             align-items: center;
             justify-content: center;
         }
 
-        .restart-btn {
+        .touch-btn:active {
+            background: #e94560;
+            transform: scale(0.95);
+        }
+
+        .leave-btn {
             background: #e94560;
             color: white;
             border: none;
-            padding: 12px 30px;
-            border-radius: 5px;
-            font-size: 1.1em;
+            padding: 12px 25px;
+            border-radius: 50px;
             font-weight: bold;
             cursor: pointer;
-            border-bottom: 4px solid #8b2c3e;
-            transition: all 0.1s ease;
+            margin-top: 15px;
+            width: 100%;
         }
 
-        .restart-btn:active {
-            transform: translateY(4px);
-            border-bottom-width: 0;
+        .copy-btn {
+            background: #4ecdc4;
+            color: #1a1f2e;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 25px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-weight: bold;
         }
 
-        .instructions {
-            color: #a0a0a0;
-            font-size: 0.9em;
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        @media (max-width: 768px) {
-            .controls-info {
+        @media (max-width: 600px) {
+            .menu-buttons {
                 flex-direction: column;
             }
             
-            canvas {
+            .menu-btn {
                 width: 100%;
-                height: auto;
             }
             
-            .control-btn {
-                width: 60px;
-                height: 60px;
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .input-group input {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <div class="game-header">
-            <h1>🏁 SPEED RACER</h1>
-        </div>
-        
-        <div class="score-board">
-            <div class="score">Score: <span id="score">0</span></div>
-            <div class="high-score">High Score: <span id="highScore">0</span></div>
-        </div>
-        
-        <div class="game-area">
-            <canvas id="gameCanvas" width="400" height="600"></canvas>
-            
-            <div class="game-status">
-                <div style="color: #e94560;" id="gameStatus">▶️ Playing</div>
-                <button class="restart-btn" onclick="resetGame()">🔄 Restart Game</button>
+    <div class="game-wrapper">
+        <!-- Menu Screen -->
+        <div id="menuScreen" class="menu-screen">
+            <div class="logo">
+                <h1>🏁 MULTIPLAYER RACING</h1>
+                <p>Create a room or join your friend's game</p>
             </div>
-        </div>
-        
-        <div class="controls-info">
-            <div class="keyboard-controls">
-                <h3>⌨️ Keyboard Controls</h3>
-                <div class="keys">
-                    <div class="key-row">
-                        <div class="key">↑</div>
-                    </div>
-                    <div class="key-row">
-                        <div class="key">←</div>
-                        <div class="key">↓</div>
-                        <div class="key">→</div>
-                    </div>
-                    <div style="margin-top: 10px; color: #a0a0a0;">
-                        Press SPACE for nitro boost!
-                    </div>
+            
+            <div class="menu-buttons">
+                <button class="menu-btn" onclick="showCreateRoom()">🚗 CREATE ROOM</button>
+                <button class="menu-btn secondary" onclick="showJoinRoom()">🚙 JOIN ROOM</button>
+            </div>
+            
+            <div id="createRoomSection" class="room-input" style="display: none;">
+                <h3>🔧 Creating New Room</h3>
+                <div class="input-group">
+                    <input type="text" id="playerNameCreate" placeholder="Your Name" maxlength="15">
+                    <button onclick="createRoom()">CREATE ROOM</button>
                 </div>
             </div>
             
-            <div class="touch-controls">
-                <h3>📱 Touch Controls</h3>
-                <div class="control-buttons">
-                    <div class="control-row">
-                        <button class="control-btn" id="upBtn" ontouchstart="startMoving('up')" ontouchend="stopMoving('up')" onmousedown="startMoving('up')" onmouseup="stopMoving('up')" onmouseleave="stopMoving('up')">↑</button>
-                    </div>
-                    <div class="control-row">
-                        <button class="control-btn" id="leftBtn" ontouchstart="startMoving('left')" ontouchend="stopMoving('left')" onmousedown="startMoving('left')" onmouseup="stopMoving('left')" onmouseleave="stopMoving('left')">←</button>
-                        <button class="control-btn" id="downBtn" ontouchstart="startMoving('down')" ontouchend="stopMoving('down')" onmousedown="startMoving('down')" onmouseup="stopMoving('down')" onmouseleave="stopMoving('down')">↓</button>
-                        <button class="control-btn" id="rightBtn" ontouchstart="startMoving('right')" ontouchend="stopMoving('right')" onmousedown="startMoving('right')" onmouseup="stopMoving('right')" onmouseleave="stopMoving('right')">→</button>
-                    </div>
-                    <div class="control-row">
-                        <button class="control-btn special" id="nitroBtn" ontouchstart="activateNitro()" onmousedown="activateNitro()">⚡ NITRO</button>
-                    </div>
+            <div id="joinRoomSection" class="room-input" style="display: none;">
+                <h3>🔑 Join Existing Room</h3>
+                <div class="input-group">
+                    <input type="text" id="roomIdJoin" placeholder="Room Code">
+                    <input type="text" id="playerNameJoin" placeholder="Your Name" maxlength="15">
+                    <button onclick="joinRoom()">JOIN ROOM</button>
                 </div>
             </div>
         </div>
         
-        <div class="instructions">
-            🚗 Avoid red cars • Collect coins • Use nitro for speed boost • Survive as long as possible!
+        <!-- Room Screen -->
+        <div id="roomScreen" class="room-screen">
+            <div class="room-header">
+                <div class="room-info">
+                    Room: <span id="roomCodeDisplay">----</span>
+                    <button class="copy-btn" onclick="copyRoomCode()">📋 COPY</button>
+                </div>
+                <div class="player-list">
+                    <div class="player">
+                        <div class="player-dot"></div>
+                        <span id="player1Name">Waiting...</span>
+                    </div>
+                    <div class="player">
+                        <div class="player-dot player2"></div>
+                        <span id="player2Name">Waiting...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="waitingArea" class="waiting-message">
+                ⏳ Waiting for player 2 to join...<br>
+                <small>Share the room code with your friend</small>
+            </div>
+            
+            <div id="gameArea" class="game-area">
+                <canvas id="gameCanvas" width="600" height="400"></canvas>
+                
+                <div class="controls-info">
+                    <div class="control-box">
+                        <h3>⌨️ Keyboard (Player 1)</h3>
+                        <div class="keys">
+                            <div class="key-row">
+                                <div class="key">W</div>
+                            </div>
+                            <div class="key-row">
+                                <div class="key">A</div>
+                                <div class="key">S</div>
+                                <div class="key">D</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-box">
+                        <h3>🎮 Touch Controls (Both)</h3>
+                        <div class="touch-controls" id="touchControls">
+                            <div></div>
+                            <div class="touch-btn" ontouchstart="startMoving('up')" ontouchend="stopMoving('up')" onmousedown="startMoving('up')" onmouseup="stopMoving('up')">↑</div>
+                            <div></div>
+                            <div class="touch-btn" ontouchstart="startMoving('left')" ontouchend="stopMoving('left')" onmousedown="startMoving('left')" onmouseup="stopMoving('left')">←</div>
+                            <div class="touch-btn" ontouchstart="startMoving('down')" ontouchend="stopMoving('down')" onmousedown="startMoving('down')" onmouseup="stopMoving('down')">↓</div>
+                            <div class="touch-btn" ontouchstart="startMoving('right')" ontouchend="stopMoving('right')" onmousedown="startMoving('right')" onmouseup="stopMoving('right')">→</div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-box">
+                        <h3>⌨️ Keyboard (Player 2)</h3>
+                        <div class="keys">
+                            <div class="key-row">
+                                <div class="key">↑</div>
+                            </div>
+                            <div class="key-row">
+                                <div class="key">←</div>
+                                <div class="key">↓</div>
+                                <div class="key">→</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="leave-btn" onclick="leaveRoom()">🚪 LEAVE ROOM</button>
+            </div>
         </div>
     </div>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    
     <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBxU1VqL9qL9qL9qL9qL9qL9qL9qL9qL9qL9qL9",
+            authDomain: "multiplayer-car-game.firebaseapp.com",
+            databaseURL: "https://multiplayer-car-game-default-rtdb.firebaseio.com",
+            projectId: "multiplayer-car-game",
+            storageBucket: "multiplayer-car-game.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abc123def456ghi789jkl"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         // Game variables
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
+        let currentRoom = null;
+        let playerId = null;
+        let playerNumber = null;
+        let playerName = '';
         
-        // Player car
-        const player = {
-            x: 200,
-            y: 500,
-            width: 40,
-            height: 60,
-            speed: 5,
-            nitroSpeed: 8
+        // Player cars
+        const cars = {
+            player1: { x: 150, y: 200, width: 30, height: 50, color: '#e94560' },
+            player2: { x: 450, y: 200, width: 30, height: 50, color: '#4ecdc4' }
         };
         
-        // Game state
-        let score = 0;
-        let highScore = localStorage.getItem('carGameHighScore') || 0;
-        let gameRunning = true;
-        let frameCount = 0;
-        let nitroActive = false;
-        let nitroDuration = 0;
-        
-        // Moving flags
+        // Movement flags
         const moving = {
             up: false,
             down: false,
@@ -321,16 +491,204 @@
             right: false
         };
         
-        // Obstacles array
+        // Game state
+        let gameRunning = false;
         let obstacles = [];
+        let frameCount = 0;
+
+        // UI Functions
+        function showCreateRoom() {
+            document.getElementById('createRoomSection').style.display = 'block';
+            document.getElementById('joinRoomSection').style.display = 'none';
+        }
         
-        // Coins array
-        let coins = [];
+        function showJoinRoom() {
+            document.getElementById('joinRoomSection').style.display = 'block';
+            document.getElementById('createRoomSection').style.display = 'none';
+        }
         
-        // Update high score display
-        document.getElementById('highScore').textContent = highScore;
+        // Generate random room code
+        function generateRoomCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 6; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
         
-        // Movement control functions
+        // Create room
+        function createRoom() {
+            const name = document.getElementById('playerNameCreate').value.trim();
+            if (!name) {
+                alert('Please enter your name!');
+                return;
+            }
+            
+            playerName = name;
+            const roomCode = generateRoomCode();
+            
+            // Create room in database
+            database.ref('rooms/' + roomCode).set({
+                player1: {
+                    name: playerName,
+                    connected: true,
+                    x: cars.player1.x,
+                    y: cars.player1.y
+                },
+                player2: null,
+                gameStarted: false,
+                createdAt: firebase.database.ServerValue.TIMESTAMP
+            }).then(() => {
+                currentRoom = roomCode;
+                playerId = 'player1';
+                playerNumber = 1;
+                
+                document.getElementById('menuScreen').style.display = 'none';
+                document.getElementById('roomScreen').style.display = 'block';
+                document.getElementById('roomCodeDisplay').textContent = roomCode;
+                document.getElementById('player1Name').textContent = playerName;
+                
+                // Listen for player 2 joining
+                listenForPlayers();
+            });
+        }
+        
+        // Join room
+        function joinRoom() {
+            const name = document.getElementById('playerNameJoin').value.trim();
+            const roomCode = document.getElementById('roomIdJoin').value.trim().toUpperCase();
+            
+            if (!name || !roomCode) {
+                alert('Please enter your name and room code!');
+                return;
+            }
+            
+            playerName = name;
+            
+            // Check if room exists
+            database.ref('rooms/' + roomCode).once('value', (snapshot) => {
+                const room = snapshot.val();
+                
+                if (!room) {
+                    alert('Room not found!');
+                    return;
+                }
+                
+                if (room.player2) {
+                    alert('Room is full!');
+                    return;
+                }
+                
+                // Join room
+                database.ref('rooms/' + roomCode + '/player2').set({
+                    name: playerName,
+                    connected: true,
+                    x: cars.player2.x,
+                    y: cars.player2.y
+                }).then(() => {
+                    currentRoom = roomCode;
+                    playerId = 'player2';
+                    playerNumber = 2;
+                    
+                    document.getElementById('menuScreen').style.display = 'none';
+                    document.getElementById('roomScreen').style.display = 'block';
+                    document.getElementById('roomCodeDisplay').textContent = roomCode;
+                    document.getElementById('player1Name').textContent = room.player1.name;
+                    document.getElementById('player2Name').textContent = playerName;
+                    
+                    // Start game for both players
+                    database.ref('rooms/' + roomCode).update({
+                        gameStarted: true
+                    });
+                    
+                    listenForPlayers();
+                });
+            });
+        }
+        
+        // Listen for players in room
+        function listenForPlayers() {
+            const roomRef = database.ref('rooms/' + currentRoom);
+            
+            roomRef.on('value', (snapshot) => {
+                const room = snapshot.val();
+                
+                if (!room) return;
+                
+                // Update player names
+                if (room.player1) {
+                    document.getElementById('player1Name').textContent = room.player1.name;
+                }
+                
+                if (room.player2) {
+                    document.getElementById('player2Name').textContent = room.player2.name;
+                    document.getElementById('waitingArea').style.display = 'none';
+                    document.getElementById('gameArea').style.display = 'block';
+                    
+                    if (!gameRunning) {
+                        startGame();
+                    }
+                } else {
+                    document.getElementById('waitingArea').style.display = 'block';
+                    document.getElementById('gameArea').style.display = 'none';
+                }
+                
+                // Update other player's position
+                if (room[playerId === 'player1' ? 'player2' : 'player1']) {
+                    const otherPlayer = room[playerId === 'player1' ? 'player2' : 'player1'];
+                    if (playerId === 'player1') {
+                        cars.player2.x = otherPlayer.x;
+                        cars.player2.y = otherPlayer.y;
+                    } else {
+                        cars.player1.x = otherPlayer.x;
+                        cars.player1.y = otherPlayer.y;
+                    }
+                }
+            });
+        }
+        
+        // Update player position in database
+        function updatePosition() {
+            if (!currentRoom || !playerId) return;
+            
+            const car = playerId === 'player1' ? cars.player1 : cars.player2;
+            
+            database.ref('rooms/' + currentRoom + '/' + playerId).update({
+                x: car.x,
+                y: car.y
+            });
+        }
+        
+        // Copy room code
+        function copyRoomCode() {
+            const code = document.getElementById('roomCodeDisplay').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('Room code copied!');
+            });
+        }
+        
+        // Leave room
+        function leaveRoom() {
+            if (currentRoom) {
+                if (playerId === 'player1') {
+                    database.ref('rooms/' + currentRoom).remove();
+                } else {
+                    database.ref('rooms/' + currentRoom + '/player2').remove();
+                }
+            }
+            
+            currentRoom = null;
+            playerId = null;
+            gameRunning = false;
+            
+            document.getElementById('roomScreen').style.display = 'none';
+            document.getElementById('menuScreen').style.display = 'block';
+            document.getElementById('gameArea').style.display = 'none';
+            document.getElementById('waitingArea').style.display = 'block';
+        }
+        
+        // Movement functions
         function startMoving(direction) {
             moving[direction] = true;
         }
@@ -339,170 +697,123 @@
             moving[direction] = false;
         }
         
-        function activateNitro() {
-            if (!nitroActive && gameRunning) {
-                nitroActive = true;
-                nitroDuration = 50; // Frames of nitro
-                
-                // Visual feedback
-                document.getElementById('nitroBtn').style.background = '#ff6b81';
-                setTimeout(() => {
-                    document.getElementById('nitroBtn').style.background = '#e94560';
-                }, 500);
-            }
-        }
-        
         // Keyboard controls
         document.addEventListener('keydown', (e) => {
-            if (!gameRunning) return;
+            if (!gameRunning || !playerId) return;
             
-            switch(e.key) {
-                case 'ArrowUp': e.preventDefault(); moving.up = true; break;
-                case 'ArrowDown': e.preventDefault(); moving.down = true; break;
-                case 'ArrowLeft': e.preventDefault(); moving.left = true; break;
-                case 'ArrowRight': e.preventDefault(); moving.right = true; break;
-                case ' ': e.preventDefault(); activateNitro(); break;
+            const key = e.key.toLowerCase();
+            
+            // Player 1 uses WASD
+            if (playerId === 'player1') {
+                switch(key) {
+                    case 'w': e.preventDefault(); moving.up = true; break;
+                    case 's': e.preventDefault(); moving.down = true; break;
+                    case 'a': e.preventDefault(); moving.left = true; break;
+                    case 'd': e.preventDefault(); moving.right = true; break;
+                }
+            }
+            
+            // Player 2 uses arrow keys
+            if (playerId === 'player2') {
+                switch(e.key) {
+                    case 'ArrowUp': e.preventDefault(); moving.up = true; break;
+                    case 'ArrowDown': e.preventDefault(); moving.down = true; break;
+                    case 'ArrowLeft': e.preventDefault(); moving.left = true; break;
+                    case 'ArrowRight': e.preventDefault(); moving.right = true; break;
+                }
             }
         });
         
         document.addEventListener('keyup', (e) => {
-            switch(e.key) {
-                case 'ArrowUp': e.preventDefault(); moving.up = false; break;
-                case 'ArrowDown': e.preventDefault(); moving.down = false; break;
-                case 'ArrowLeft': e.preventDefault(); moving.left = false; break;
-                case 'ArrowRight': e.preventDefault(); moving.right = false; break;
+            const key = e.key.toLowerCase();
+            
+            if (playerId === 'player1') {
+                switch(key) {
+                    case 'w': moving.up = false; break;
+                    case 's': moving.down = false; break;
+                    case 'a': moving.left = false; break;
+                    case 'd': moving.right = false; break;
+                }
+            }
+            
+            if (playerId === 'player2') {
+                switch(e.key) {
+                    case 'ArrowUp': moving.up = false; break;
+                    case 'ArrowDown': moving.down = false; break;
+                    case 'ArrowLeft': moving.left = false; break;
+                    case 'ArrowRight': moving.right = false; break;
+                }
             }
         });
         
-        // Create obstacle
-        function createObstacle() {
-            const types = [
-                { width: 30, height: 50, color: '#ff4444' }, // Small car
-                { width: 40, height: 60, color: '#ff6b6b' }, // Medium car
-                { width: 50, height: 70, color: '#ff8787' }  // Large car
-            ];
+        // Start game
+        function startGame() {
+            gameRunning = true;
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
             
-            const type = types[Math.floor(Math.random() * types.length)];
+            // Reset positions
+            cars.player1 = { x: 150, y: 200, width: 30, height: 50, color: '#e94560' };
+            cars.player2 = { x: 450, y: 200, width: 30, height: 50, color: '#4ecdc4' };
+            obstacles = [];
             
-            return {
-                x: Math.random() * (canvas.width - type.width),
-                y: -type.height,
-                width: type.width,
-                height: type.height,
-                color: type.color,
-                speed: 3 + Math.random() * 3
-            };
-        }
-        
-        // Create coin
-        function createCoin() {
-            return {
-                x: Math.random() * (canvas.width - 20),
-                y: -20,
-                width: 20,
-                height: 20,
-                collected: false,
-                speed: 2 + Math.random() * 2
-            };
-        }
-        
-        // Draw player car
-        function drawPlayer() {
-            ctx.save();
-            
-            // Car body
-            ctx.fillStyle = '#e94560';
-            ctx.shadowColor = '#ff6b81';
-            ctx.shadowBlur = 15;
-            ctx.fillRect(player.x, player.y, player.width, player.height);
-            
-            // Windows
-            ctx.fillStyle = '#1e272e';
-            ctx.shadowBlur = 5;
-            ctx.fillRect(player.x + 5, player.y + 10, player.width - 10, 15);
-            
-            // Headlights
-            ctx.fillStyle = '#ffff00';
-            ctx.shadowColor = '#ffff00';
-            ctx.fillRect(player.x + 5, player.y, 5, 5);
-            ctx.fillRect(player.x + player.width - 10, player.y, 5, 5);
-            
-            // Wheels
-            ctx.fillStyle = '#2c3e50';
-            ctx.shadowBlur = 10;
-            ctx.fillRect(player.x - 5, player.y + 10, 5, 15);
-            ctx.fillRect(player.x + player.width, player.y + 10, 5, 15);
-            ctx.fillRect(player.x - 5, player.y + player.height - 25, 5, 15);
-            ctx.fillRect(player.x + player.width, player.y + player.height - 25, 5, 15);
-            
-            // Nitro effect
-            if (nitroActive) {
-                ctx.fillStyle = '#ffaa00';
-                ctx.shadowColor = '#ffaa00';
-                ctx.globalAlpha = 0.5;
-                ctx.fillRect(player.x + 5, player.y + player.height, player.width - 10, 20);
-                ctx.globalAlpha = 1;
-            }
-            
-            ctx.restore();
-        }
-        
-        // Draw obstacles
-        function drawObstacles() {
-            obstacles.forEach(obstacle => {
-                ctx.fillStyle = obstacle.color;
-                ctx.shadowColor = '#ff0000';
-                ctx.shadowBlur = 10;
-                ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            // Game loop
+            function gameLoop() {
+                if (!gameRunning) return;
                 
-                // Windows
-                ctx.fillStyle = '#1e272e';
-                ctx.shadowBlur = 5;
-                ctx.fillRect(obstacle.x + 5, obstacle.y + 10, obstacle.width - 10, 15);
-            });
-        }
-        
-        // Draw coins
-        function drawCoins() {
-            coins.forEach(coin => {
-                if (!coin.collected) {
-                    ctx.fillStyle = '#ffd700';
-                    ctx.shadowColor = '#ffff00';
-                    ctx.shadowBlur = 15;
-                    ctx.beginPath();
-                    ctx.arc(coin.x + 10, coin.y + 10, 10, 0, Math.PI * 2);
-                    ctx.fill();
-                    
-                    // Coin shine
-                    ctx.fillStyle = '#ffffff';
-                    ctx.shadowBlur = 5;
-                    ctx.beginPath();
-                    ctx.arc(coin.x + 6, coin.y + 6, 3, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            });
-        }
-        
-        // Draw road
-        function drawRoad() {
-            // Road background
-            ctx.fillStyle = '#2c3e50';
-            ctx.shadowBlur = 0;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Lane markings
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 5;
-            ctx.setLineDash([20, 30]);
-            
-            for (let i = 0; i < canvas.height; i += 50) {
-                ctx.beginPath();
-                ctx.moveTo(canvas.width / 2, (i + frameCount * 2) % canvas.height);
-                ctx.lineTo(canvas.width / 2, ((i + frameCount * 2) % canvas.height) + 30);
-                ctx.stroke();
+                update();
+                draw(ctx);
+                requestAnimationFrame(gameLoop);
             }
             
-            ctx.setLineDash([]);
+            gameLoop();
+        }
+        
+        // Update game state
+        function update() {
+            if (!gameRunning) return;
+            
+            // Get current player's car
+            const myCar = playerId === 'player1' ? cars.player1 : cars.player2;
+            
+            // Move current player
+            const speed = 3;
+            if (moving.up && myCar.y > 0) myCar.y -= speed;
+            if (moving.down && myCar.y < 350) myCar.y += speed;
+            if (moving.left && myCar.x > 0) myCar.x -= speed;
+            if (moving.right && myCar.x < 570) myCar.x += speed;
+            
+            // Update position in database
+            updatePosition();
+            
+            // Create obstacles
+            if (Math.random() < 0.02) {
+                obstacles.push({
+                    x: Math.random() * 570,
+                    y: -30,
+                    width: 30,
+                    height: 50,
+                    color: '#ff4444',
+                    speed: 2 + Math.random() * 3
+                });
+            }
+            
+            // Update obstacles
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                obstacles[i].y += obstacles[i].speed;
+                
+                // Check collision with both players
+                if (checkCollision(cars.player1, obstacles[i]) || checkCollision(cars.player2, obstacles[i])) {
+                    gameRunning = false;
+                    alert('Game Over!');
+                    leaveRoom();
+                    return;
+                }
+                
+                if (obstacles[i].y > 400) {
+                    obstacles.splice(i, 1);
+                }
+            }
         }
         
         // Check collision
@@ -513,142 +824,63 @@
                    rect1.y + rect1.height > rect2.y;
         }
         
-        // Update game
-        function update() {
-            if (!gameRunning) return;
+        // Draw game
+        function draw(ctx) {
+            const canvas = document.getElementById('gameCanvas');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Update nitro
-            if (nitroActive) {
-                nitroDuration--;
-                if (nitroDuration <= 0) {
-                    nitroActive = false;
-                }
+            // Draw road
+            ctx.fillStyle = '#2c3e50';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw lane markings
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 3;
+            ctx.setLineDash([20, 30]);
+            
+            for (let i = 0; i < canvas.height; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(canvas.width / 2, (i + frameCount * 2) % canvas.height);
+                ctx.lineTo(canvas.width / 2, ((i + frameCount * 2) % canvas.height) + 30);
+                ctx.stroke();
             }
             
-            // Player movement
-            const currentSpeed = nitroActive ? player.nitroSpeed : player.speed;
+            ctx.setLineDash([]);
             
-            if (moving.up && player.y > 0) player.y -= currentSpeed;
-            if (moving.down && player.y < canvas.height - player.height) player.y += currentSpeed;
-            if (moving.left && player.x > 0) player.x -= currentSpeed;
-            if (moving.right && player.x < canvas.width - player.width) player.x += currentSpeed;
-            
-            // Create obstacles
-            if (Math.random() < 0.02) {
-                obstacles.push(createObstacle());
-            }
-            
-            // Create coins
-            if (Math.random() < 0.03) {
-                coins.push(createCoin());
-            }
-            
-            // Update obstacles
-            for (let i = obstacles.length - 1; i >= 0; i--) {
-                obstacles[i].y += obstacles[i].speed;
+            // Draw obstacles
+            obstacles.forEach(obstacle => {
+                ctx.fillStyle = obstacle.color;
+                ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
                 
-                // Check collision with player
-                if (checkCollision(player, obstacles[i])) {
-                    gameRunning = false;
-                    document.getElementById('gameStatus').innerHTML = '💥 GAME OVER';
-                }
-                
-                // Remove if off screen
-                if (obstacles[i].y > canvas.height) {
-                    obstacles.splice(i, 1);
-                }
-            }
+                // Windows
+                ctx.fillStyle = '#1e272e';
+                ctx.fillRect(obstacle.x + 5, obstacle.y + 10, obstacle.width - 10, 15);
+            });
             
-            // Update coins
-            for (let i = coins.length - 1; i >= 0; i--) {
-                if (!coins[i].collected) {
-                    coins[i].y += coins[i].speed;
-                    
-                    // Check collection
-                    if (checkCollision(player, coins[i])) {
-                        coins[i].collected = true;
-                        score += 10;
-                        document.getElementById('score').textContent = score;
-                        
-                        if (score > highScore) {
-                            highScore = score;
-                            localStorage.setItem('carGameHighScore', highScore);
-                            document.getElementById('highScore').textContent = highScore;
-                        }
-                        
-                        setTimeout(() => {
-                            coins.splice(i, 1);
-                        }, 100);
-                        continue;
-                    }
-                    
-                    // Remove if off screen
-                    if (coins[i].y > canvas.height) {
-                        coins.splice(i, 1);
-                    }
-                }
-            }
+            // Draw player 1
+            ctx.fillStyle = cars.player1.color;
+            ctx.shadowColor = '#e94560';
+            ctx.shadowBlur = 15;
+            ctx.fillRect(cars.player1.x, cars.player1.y, cars.player1.width, cars.player1.height);
             
+            // Player 1 label
+            ctx.fillStyle = 'white';
+            ctx.shadowBlur = 5;
+            ctx.font = 'bold 12px Arial';
+            ctx.fillText('P1', cars.player1.x + 8, cars.player1.y - 5);
+            
+            // Draw player 2
+            ctx.fillStyle = cars.player2.color;
+            ctx.shadowColor = '#4ecdc4';
+            ctx.fillRect(cars.player2.x, cars.player2.y, cars.player2.width, cars.player2.height);
+            
+            // Player 2 label
+            ctx.fillStyle = 'white';
+            ctx.fillText('P2', cars.player2.x + 8, cars.player2.y - 5);
+            
+            ctx.shadowBlur = 0;
             frameCount++;
         }
-        
-        // Draw everything
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawRoad();
-            drawObstacles();
-            drawCoins();
-            drawPlayer();
-            
-            // Game over overlay
-            if (!gameRunning) {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
-                ctx.fillStyle = '#e94560';
-                ctx.font = 'bold 30px Arial';
-                ctx.shadowBlur = 20;
-                ctx.textAlign = 'center';
-                ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2);
-                
-                ctx.fillStyle = 'white';
-                ctx.font = '20px Arial';
-                ctx.fillText('Score: ' + score, canvas.width / 2, canvas.height / 2 + 40);
-            }
-        }
-        
-        // Reset game
-        function resetGame() {
-            player.x = 200;
-            player.y = 500;
-            obstacles = [];
-            coins = [];
-            score = 0;
-            gameRunning = true;
-            nitroActive = false;
-            document.getElementById('score').textContent = '0';
-            document.getElementById('gameStatus').innerHTML = '▶️ Playing';
-        }
-        
-        // Game loop
-        function gameLoop() {
-            update();
-            draw();
-            requestAnimationFrame(gameLoop);
-        }
-        
-        // Start game
-        gameLoop();
-        
-        // Prevent context menu on canvas
-        canvas.addEventListener('contextmenu', (e) => e.preventDefault());
-        
-        // Prevent scrolling on arrow keys
-        window.addEventListener('keydown', (e) => {
-            if (e.key.startsWith('Arrow') || e.key === ' ') {
-                e.preventDefault();
-            }
-        }, false);
     </script>
 </body>
 </html>
