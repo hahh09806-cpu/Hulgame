@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏁 Multiplayer Car Racing - Create & Join Rooms</title>
+    <title>🏁 Real Car Game - Play with Buttons!</title>
     <style>
         * {
             margin: 0;
@@ -14,586 +14,641 @@
 
         body {
             background: linear-gradient(135deg, #0a0f1e, #1a1f2e);
-            font-family: 'Arial', sans-serif;
-            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
             padding: 20px;
         }
 
-        .game-wrapper {
-            max-width: 1200px;
-            width: 100%;
-        }
-
-        /* Menu Screen */
-        .menu-screen {
-            background: #16213e;
-            border-radius: 20px;
-            padding: 40px;
-            border: 3px solid #e94560;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-            text-align: center;
-        }
-
-        .menu-screen h1 {
-            color: #e94560;
-            font-size: 3em;
-            margin-bottom: 20px;
-            text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
-        }
-
-        .menu-buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin: 40px 0;
-        }
-
-        .menu-btn {
-            background: #0f3460;
-            color: white;
-            border: 2px solid #e94560;
-            padding: 20px 40px;
-            font-size: 1.5em;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
-        }
-
-        .menu-btn:hover {
-            background: #e94560;
-            transform: scale(1.05);
-        }
-
-        .room-input {
-            background: #0f3460;
-            padding: 30px;
-            border-radius: 10px;
-            margin-top: 20px;
-        }
-
-        .room-input input {
-            background: #1a1f2e;
-            border: 2px solid #e94560;
-            padding: 15px 25px;
-            font-size: 1.2em;
-            color: white;
-            border-radius: 5px;
-            width: 300px;
-            margin-right: 10px;
-        }
-
-        .room-input input::placeholder {
-            color: #666;
-        }
-
-        .action-btn {
-            background: #e94560;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.2em;
-            border-radius: 5px;
-            cursor: pointer;
-            border-bottom: 4px solid #8b2c3e;
-            font-weight: bold;
-        }
-
-        .action-btn:active {
-            transform: translateY(4px);
-            border-bottom-width: 0;
-        }
-
-        /* Game Screen */
-        .game-screen {
+        .game-container {
             background: #16213e;
             border-radius: 20px;
             padding: 25px;
-            border: 3px solid #e94560;
-            display: none;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            border: 2px solid #e94560;
         }
 
-        .room-info {
-            background: #0f3460;
-            padding: 15px;
-            border-radius: 10px;
+        .game-header {
+            text-align: center;
             margin-bottom: 20px;
+        }
+
+        .game-header h1 {
+            color: #e94560;
+            font-size: 2.5em;
+            text-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .score-board {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: #0f3460;
+            padding: 15px;
+            border-radius: 10px;
             color: white;
+            font-size: 1.2em;
+            margin-bottom: 15px;
         }
 
-        .room-code {
+        .score, .high-score {
             background: #1a1f2e;
-            padding: 10px 20px;
+            padding: 8px 20px;
             border-radius: 5px;
             border-left: 3px solid #e94560;
-            font-size: 1.3em;
-            font-weight: bold;
         }
 
-        .players-list {
+        .game-area {
             display: flex;
-            gap: 20px;
-        }
-
-        .player-badge {
-            padding: 8px 15px;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-
-        .player1 { background: #e94560; }
-        .player2 { background: #4ecdc4; }
-
-        .game-container {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .race-track {
-            flex: 2;
-            min-width: 600px;
+            flex-direction: column;
+            align-items: center;
         }
 
         canvas {
             background: #1e272e;
             border-radius: 10px;
             border: 3px solid #e94560;
+            box-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
+            display: block;
+            cursor: none;
+        }
+
+        .controls-info {
+            display: flex;
+            justify-content: space-between;
             width: 100%;
-            height: auto;
+            margin: 20px 0;
+            gap: 20px;
         }
 
-        .players-panel {
-            flex: 1;
-            min-width: 250px;
+        .keyboard-controls {
             background: #0f3460;
-            border-radius: 10px;
-            padding: 20px;
-            color: white;
-        }
-
-        .player-card {
-            background: #1a1f2e;
             padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border-left: 4px solid;
+            border-radius: 10px;
+            flex: 1;
         }
 
-        .player-card.p1 { border-color: #e94560; }
-        .player-card.p2 { border-color: #4ecdc4; }
-
-        .player-name {
-            font-size: 1.2em;
-            font-weight: bold;
+        .keyboard-controls h3 {
+            color: #e94560;
             margin-bottom: 10px;
+            text-align: center;
         }
 
-        .player-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            font-size: 0.9em;
+        .keys {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
         }
 
-        .controls-section {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 2px solid #e94560;
+        .key-row {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .key {
+            background: #1a1f2e;
+            color: white;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-weight: bold;
+            border: 2px solid #e94560;
+            box-shadow: 0 4px 0 #8b2c3e;
+        }
+
+        .touch-controls {
+            background: #0f3460;
+            padding: 15px;
+            border-radius: 10px;
+            flex: 2;
+        }
+
+        .touch-controls h3 {
+            color: #e94560;
+            margin-bottom: 10px;
+            text-align: center;
         }
 
         .control-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             gap: 10px;
-            margin-top: 15px;
         }
 
-        .ctrl-btn {
+        .control-row {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .control-btn {
             background: #1a1f2e;
             color: white;
-            border: 2px solid #e94560;
-            padding: 15px;
-            border-radius: 5px;
-            font-size: 1.2em;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 3px solid #e94560;
+            font-size: 1.5em;
             font-weight: bold;
             cursor: pointer;
+            box-shadow: 0 6px 0 #8b2c3e;
+            transition: all 0.1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             touch-action: manipulation;
         }
 
-        .ctrl-btn:active {
+        .control-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 0 0 #8b2c3e;
+        }
+
+        .control-btn.special {
             background: #e94560;
+            color: white;
+            border-color: white;
         }
 
-        .waiting-message {
-            text-align: center;
-            color: #e94560;
-            font-size: 1.2em;
-            margin: 20px 0;
+        .game-status {
+            margin-top: 15px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
         }
 
-        .back-btn {
+        .restart-btn {
             background: #e94560;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 30px;
             border-radius: 5px;
-            cursor: pointer;
+            font-size: 1.1em;
             font-weight: bold;
+            cursor: pointer;
+            border-bottom: 4px solid #8b2c3e;
+            transition: all 0.1s ease;
+        }
+
+        .restart-btn:active {
+            transform: translateY(4px);
+            border-bottom-width: 0;
+        }
+
+        .instructions {
+            color: #a0a0a0;
+            font-size: 0.9em;
+            margin-top: 10px;
+            text-align: center;
         }
 
         @media (max-width: 768px) {
-            .game-container {
+            .controls-info {
                 flex-direction: column;
             }
             
-            .race-track {
-                min-width: 100%;
+            canvas {
+                width: 100%;
+                height: auto;
+            }
+            
+            .control-btn {
+                width: 60px;
+                height: 60px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="game-wrapper">
-        <!-- Menu Screen -->
-        <div id="menuScreen" class="menu-screen">
-            <h1>🏁 MULTIPLAYER RACING</h1>
+    <div class="game-container">
+        <div class="game-header">
+            <h1>🏁 SPEED RACER</h1>
+        </div>
+        
+        <div class="score-board">
+            <div class="score">Score: <span id="score">0</span></div>
+            <div class="high-score">High Score: <span id="highScore">0</span></div>
+        </div>
+        
+        <div class="game-area">
+            <canvas id="gameCanvas" width="400" height="600"></canvas>
             
-            <div class="menu-buttons">
-                <button class="menu-btn" onclick="showCreateRoom()">🎮 CREATE ROOM</button>
-                <button class="menu-btn" onclick="showJoinRoom()">🚗 JOIN ROOM</button>
-            </div>
-
-            <div id="createRoomSection" class="room-input" style="display: none;">
-                <h2 style="color: white; margin-bottom: 20px;">Create New Room</h2>
-                <input type="text" id="playerNameCreate" placeholder="Your Name" value="Player 1">
-                <button class="action-btn" onclick="createRoom()">CREATE ROOM</button>
-            </div>
-
-            <div id="joinRoomSection" class="room-input" style="display: none;">
-                <h2 style="color: white; margin-bottom: 20px;">Join Room</h2>
-                <input type="text" id="roomCode" placeholder="Room Code">
-                <input type="text" id="playerNameJoin" placeholder="Your Name" value="Player 2" style="margin-top: 10px;">
-                <button class="action-btn" onclick="joinRoom()" style="margin-top: 10px;">JOIN ROOM</button>
+            <div class="game-status">
+                <div style="color: #e94560;" id="gameStatus">▶️ Playing</div>
+                <button class="restart-btn" onclick="resetGame()">🔄 Restart Game</button>
             </div>
         </div>
-
-        <!-- Game Screen -->
-        <div id="gameScreen" class="game-screen">
-            <div class="room-info">
-                <div>
-                    <span style="color: #a0a0a0;">Room: </span>
-                    <span class="room-code" id="currentRoomCode">ABC123</span>
-                </div>
-                <div class="players-list" id="playersList">
-                    <span class="player-badge player1" id="player1Status">👤 Player 1</span>
-                    <span class="player-badge player2" id="player2Status">👤 Player 2</span>
-                </div>
-                <button class="back-btn" onclick="leaveRoom()">🚪 LEAVE ROOM</button>
-            </div>
-
-            <div class="game-container">
-                <div class="race-track">
-                    <canvas id="gameCanvas" width="600" height="500"></canvas>
-                    
-                    <div id="waitingMessage" class="waiting-message" style="display: none;">
-                        ⏳ Waiting for opponent to join...
+        
+        <div class="controls-info">
+            <div class="keyboard-controls">
+                <h3>⌨️ Keyboard Controls</h3>
+                <div class="keys">
+                    <div class="key-row">
+                        <div class="key">↑</div>
                     </div>
-                </div>
-
-                <div class="players-panel">
-                    <h2 style="color: #e94560; margin-bottom: 20px;">RACE STATUS</h2>
-                    
-                    <div id="player1Card" class="player-card p1">
-                        <div class="player-name" id="player1Name">Player 1</div>
-                        <div class="player-stats">
-                            <div>Speed: <span id="player1Speed">0</span></div>
-                            <div>Laps: <span id="player1Laps">0</span></div>
-                        </div>
+                    <div class="key-row">
+                        <div class="key">←</div>
+                        <div class="key">↓</div>
+                        <div class="key">→</div>
                     </div>
-
-                    <div id="player2Card" class="player-card p2" style="opacity: 0.5;">
-                        <div class="player-name" id="player2Name">Waiting...</div>
-                        <div class="player-stats">
-                            <div>Speed: <span id="player2Speed">0</span></div>
-                            <div>Laps: <span id="player2Laps">0</span></div>
-                        </div>
-                    </div>
-
-                    <div class="controls-section">
-                        <h3 style="color: #e94560;">CONTROLS</h3>
-                        <div class="control-buttons">
-                            <button class="ctrl-btn" id="upBtn" ontouchstart="moveCar('up')" ontouchend="stopCar('up')" onmousedown="moveCar('up')" onmouseup="stopCar('up')">↑</button>
-                            <button class="ctrl-btn" id="downBtn" ontouchstart="moveCar('down')" ontouchend="stopCar('down')" onmousedown="moveCar('down')" onmouseup="stopCar('down')">↓</button>
-                            <button class="ctrl-btn" id="leftBtn" ontouchstart="moveCar('left')" ontouchend="stopCar('left')" onmousedown="moveCar('left')" onmouseup="stopCar('left')">←</button>
-                            <button class="ctrl-btn" id="rightBtn" ontouchstart="moveCar('right')" ontouchend="stopCar('right')" onmousedown="moveCar('right')" onmouseup="stopCar('right')">→</button>
-                            <button class="ctrl-btn" id="nitroBtn" style="grid-column: span 3;" onclick="useNitro()">⚡ NITRO</button>
-                        </div>
+                    <div style="margin-top: 10px; color: #a0a0a0;">
+                        Press SPACE for nitro boost!
                     </div>
                 </div>
             </div>
+            
+            <div class="touch-controls">
+                <h3>📱 Touch Controls</h3>
+                <div class="control-buttons">
+                    <div class="control-row">
+                        <button class="control-btn" id="upBtn" ontouchstart="startMoving('up')" ontouchend="stopMoving('up')" onmousedown="startMoving('up')" onmouseup="stopMoving('up')" onmouseleave="stopMoving('up')">↑</button>
+                    </div>
+                    <div class="control-row">
+                        <button class="control-btn" id="leftBtn" ontouchstart="startMoving('left')" ontouchend="stopMoving('left')" onmousedown="startMoving('left')" onmouseup="stopMoving('left')" onmouseleave="stopMoving('left')">←</button>
+                        <button class="control-btn" id="downBtn" ontouchstart="startMoving('down')" ontouchend="stopMoving('down')" onmousedown="startMoving('down')" onmouseup="stopMoving('down')" onmouseleave="stopMoving('down')">↓</button>
+                        <button class="control-btn" id="rightBtn" ontouchstart="startMoving('right')" ontouchend="stopMoving('right')" onmousedown="startMoving('right')" onmouseup="stopMoving('right')" onmouseleave="stopMoving('right')">→</button>
+                    </div>
+                    <div class="control-row">
+                        <button class="control-btn special" id="nitroBtn" ontouchstart="activateNitro()" onmousedown="activateNitro()">⚡ NITRO</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            🚗 Avoid red cars • Collect coins • Use nitro for speed boost • Survive as long as possible!
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
     <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBkS_3sQ9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9", // You'll need to replace this
-            authDomain: "multiplayer-racing.firebaseapp.com",
-            databaseURL: "https://multiplayer-racing-default-rtdb.firebaseio.com",
-            projectId: "multiplayer-racing",
-            storageBucket: "multiplayer-racing.appspot.com",
-            messagingSenderId: "123456789012",
-            appId: "1:123456789012:web:abc123def456"
-        };
-
-        // Initialize Firebase (you'll need to create your own Firebase project)
-        // For now, we'll use a mock implementation for demonstration
-        let firebaseInitialized = false;
-        
-        // Mock database for demonstration
-        const mockDB = {
-            rooms: {}
-        };
-
         // Game variables
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
-        let currentPlayer = null;
-        let currentRoom = null;
-        let playerName = '';
-        let roomCode = '';
-        
-        // Car objects
-        const cars = {
-            player1: {
-                x: 150,
-                y: 250,
-                width: 40,
-                height: 60,
-                color: '#e94560',
-                speed: 5,
-                nitroSpeed: 8,
-                moving: { up: false, down: false, left: false, right: false },
-                laps: 0,
-                checkpoint: false
-            },
-            player2: {
-                x: 400,
-                y: 250,
-                width: 40,
-                height: 60,
-                color: '#4ecdc4',
-                speed: 5,
-                nitroSpeed: 8,
-                moving: { up: false, down: false, left: false, right: false },
-                laps: 0,
-                checkpoint: false
-            }
+        // Player car
+        const player = {
+            x: 200,
+            y: 500,
+            width: 40,
+            height: 60,
+            speed: 5,
+            nitroSpeed: 8
         };
-
+        
+        // Game state
+        let score = 0;
+        let highScore = localStorage.getItem('carGameHighScore') || 0;
         let gameRunning = true;
         let frameCount = 0;
         let nitroActive = false;
         let nitroDuration = 0;
-        let myPlayerId = null;
-
-        // Track boundaries (for lap counting)
-        const startLine = { x: 0, y: 100, width: 600, height: 10 };
-
-        // UI Functions
-        function showCreateRoom() {
-            document.getElementById('createRoomSection').style.display = 'block';
-            document.getElementById('joinRoomSection').style.display = 'none';
+        
+        // Moving flags
+        const moving = {
+            up: false,
+            down: false,
+            left: false,
+            right: false
+        };
+        
+        // Obstacles array
+        let obstacles = [];
+        
+        // Coins array
+        let coins = [];
+        
+        // Update high score display
+        document.getElementById('highScore').textContent = highScore;
+        
+        // Movement control functions
+        function startMoving(direction) {
+            moving[direction] = true;
         }
-
-        function showJoinRoom() {
-            document.getElementById('joinRoomSection').style.display = 'block';
-            document.getElementById('createRoomSection').style.display = 'none';
+        
+        function stopMoving(direction) {
+            moving[direction] = false;
         }
-
-        function createRoom() {
-            playerName = document.getElementById('playerNameCreate').value || 'Player 1';
-            roomCode = generateRoomCode();
+        
+        function activateNitro() {
+            if (!nitroActive && gameRunning) {
+                nitroActive = true;
+                nitroDuration = 50; // Frames of nitro
+                
+                // Visual feedback
+                document.getElementById('nitroBtn').style.background = '#ff6b81';
+                setTimeout(() => {
+                    document.getElementById('nitroBtn').style.background = '#e94560';
+                }, 500);
+            }
+        }
+        
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (!gameRunning) return;
             
-            currentPlayer = 'player1';
-            myPlayerId = 'player1';
+            switch(e.key) {
+                case 'ArrowUp': e.preventDefault(); moving.up = true; break;
+                case 'ArrowDown': e.preventDefault(); moving.down = true; break;
+                case 'ArrowLeft': e.preventDefault(); moving.left = true; break;
+                case 'ArrowRight': e.preventDefault(); moving.right = true; break;
+                case ' ': e.preventDefault(); activateNitro(); break;
+            }
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            switch(e.key) {
+                case 'ArrowUp': e.preventDefault(); moving.up = false; break;
+                case 'ArrowDown': e.preventDefault(); moving.down = false; break;
+                case 'ArrowLeft': e.preventDefault(); moving.left = false; break;
+                case 'ArrowRight': e.preventDefault(); moving.right = false; break;
+            }
+        });
+        
+        // Create obstacle
+        function createObstacle() {
+            const types = [
+                { width: 30, height: 50, color: '#ff4444' }, // Small car
+                { width: 40, height: 60, color: '#ff6b6b' }, // Medium car
+                { width: 50, height: 70, color: '#ff8787' }  // Large car
+            ];
             
-            // Initialize room in mock database
-            mockDB.rooms[roomCode] = {
-                player1: { name: playerName, connected: true, car: cars.player1 },
-                player2: { name: 'Waiting...', connected: false, car: cars.player2 },
-                createdAt: Date.now()
+            const type = types[Math.floor(Math.random() * types.length)];
+            
+            return {
+                x: Math.random() * (canvas.width - type.width),
+                y: -type.height,
+                width: type.width,
+                height: type.height,
+                color: type.color,
+                speed: 3 + Math.random() * 3
             };
-            
-            startGame();
         }
-
-        function joinRoom() {
-            const inputCode = document.getElementById('roomCode').value.toUpperCase();
-            playerName = document.getElementById('playerNameJoin').value || 'Player 2';
-            
-            // Check if room exists in mock database
-            if (mockDB.rooms[inputCode]) {
-                roomCode = inputCode;
-                currentPlayer = 'player2';
-                myPlayerId = 'player2';
-                
-                // Update room
-                mockDB.rooms[roomCode].player2 = { name: playerName, connected: true, car: cars.player2 };
-                
-                startGame();
-            } else {
-                alert('Room not found!');
-            }
+        
+        // Create coin
+        function createCoin() {
+            return {
+                x: Math.random() * (canvas.width - 20),
+                y: -20,
+                width: 20,
+                height: 20,
+                collected: false,
+                speed: 2 + Math.random() * 2
+            };
         }
-
-        function generateRoomCode() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let code = '';
-            for (let i = 0; i < 6; i++) {
-                code += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return code;
-        }
-
-        function startGame() {
-            document.getElementById('menuScreen').style.display = 'none';
-            document.getElementById('gameScreen').style.display = 'block';
-            
-            document.getElementById('currentRoomCode').textContent = roomCode;
-            document.getElementById('player1Name').textContent = mockDB.rooms[roomCode].player1.name;
-            
-            if (mockDB.rooms[roomCode].player2.connected) {
-                document.getElementById('player2Name').textContent = mockDB.rooms[roomCode].player2.name;
-                document.getElementById('player2Card').style.opacity = 1;
-            } else {
-                document.getElementById('waitingMessage').style.display = 'block';
-            }
-            
-            // Start game loop
-            gameLoop();
-        }
-
-        function leaveRoom() {
-            document.getElementById('gameScreen').style.display = 'none';
-            document.getElementById('menuScreen').style.display = 'block';
-            
-            // Clean up room
-            if (roomCode && mockDB.rooms[roomCode]) {
-                delete mockDB.rooms[roomCode];
-            }
-            
-            currentRoom = null;
-            currentPlayer = null;
-        }
-
-        // Car movement
-        function moveCar(direction) {
-            if (!currentPlayer || !gameRunning) return;
-            
-            cars[currentPlayer].moving[direction] = true;
-            
-            // Update other player in mock DB
-            if (mockDB.rooms[roomCode]) {
-                mockDB.rooms[roomCode][currentPlayer].car = cars[currentPlayer];
-            }
-        }
-
-        function stopCar(direction) {
-            if (!currentPlayer) return;
-            cars[currentPlayer].moving[direction] = false;
-        }
-
-        function useNitro() {
-            if (!currentPlayer || !gameRunning) return;
-            
-            nitroActive = true;
-            nitroDuration = 30;
-            
-            // Visual feedback
-            document.getElementById('nitroBtn').style.background = '#e94560';
-            setTimeout(() => {
-                document.getElementById('nitroBtn').style.background = '#1a1f2e';
-            }, 300);
-        }
-
-        // Update car position
-        function updateCar(car) {
-            const currentSpeed = nitroActive && car === cars[currentPlayer] ? car.nitroSpeed : car.speed;
-            
-            if (car.moving.up && car.y > 0) car.y -= currentSpeed;
-            if (car.moving.down && car.y < canvas.height - car.height) car.y += currentSpeed;
-            if (car.moving.left && car.x > 0) car.x -= currentSpeed;
-            if (car.moving.right && car.x < canvas.width - car.width) car.x += currentSpeed;
-            
-            // Check lap (crossing start line)
-            if (car.y < 110 && car.y > 90 && !car.checkpoint) {
-                car.checkpoint = true;
-            }
-            if (car.checkpoint && car.y > 110) {
-                car.laps++;
-                car.checkpoint = false;
-                
-                // Update lap display
-                if (car === cars.player1) {
-                    document.getElementById('player1Laps').textContent = car.laps;
-                } else {
-                    document.getElementById('player2Laps').textContent = car.laps;
-                }
-            }
-        }
-
-        // Drawing functions
-        function drawTrack() {
-            // Road
-            ctx.fillStyle = '#2c3e50';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Lane markings
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 3;
-            ctx.setLineDash([20, 30]);
-            
-            for (let i = 0; i < canvas.width; i += 50) {
-                ctx.beginPath();
-                ctx.moveTo(i, 0);
-                ctx.lineTo(i, canvas.height);
-                ctx.stroke();
-            }
-            
-            ctx.setLineDash([]);
-            
-            // Start line
-            ctx.fillStyle = '#ffff00';
-            ctx.fillRect(0, 100, canvas.width, 5);
-            ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 14px Arial';
-            ctx.fillText('START/FINISH', 250, 90);
-        }
-
-        function drawCar(car) {
+        
+        // Draw player car
+        function drawPlayer() {
             ctx.save();
             
             // Car body
-            ctx.fillStyle = car.color;
-            ctx.shadowColor = car.color;
+            ctx.fillStyle = '#e94560';
+            ctx.shadowColor = '#ff6b81';
             ctx.shadowBlur = 15;
-            ctx.fillRect(car.x, car.y, car.width, car.height);
+            ctx.fillRect(player.x, player.y, player.width, player.height);
             
             // Windows
             ctx.fillStyle = '#1e272e';
             ctx.shadowBlur = 5;
-            ctx.fillRect(car.x + 5, car.y + 10, car.width - 10, 15);
- 
+            ctx.fillRect(player.x + 5, player.y + 10, player.width - 10, 15);
+            
+            // Headlights
+            ctx.fillStyle = '#ffff00';
+            ctx.shadowColor = '#ffff00';
+            ctx.fillRect(player.x + 5, player.y, 5, 5);
+            ctx.fillRect(player.x + player.width - 10, player.y, 5, 5);
+            
+            // Wheels
+            ctx.fillStyle = '#2c3e50';
+            ctx.shadowBlur = 10;
+            ctx.fillRect(player.x - 5, player.y + 10, 5, 15);
+            ctx.fillRect(player.x + player.width, player.y + 10, 5, 15);
+            ctx.fillRect(player.x - 5, player.y + player.height - 25, 5, 15);
+            ctx.fillRect(player.x + player.width, player.y + player.height - 25, 5, 15);
+            
+            // Nitro effect
+            if (nitroActive) {
+                ctx.fillStyle = '#ffaa00';
+                ctx.shadowColor = '#ffaa00';
+                ctx.globalAlpha = 0.5;
+                ctx.fillRect(player.x + 5, player.y + player.height, player.width - 10, 20);
+                ctx.globalAlpha = 1;
+            }
+            
+            ctx.restore();
+        }
+        
+        // Draw obstacles
+        function drawObstacles() {
+            obstacles.forEach(obstacle => {
+                ctx.fillStyle = obstacle.color;
+                ctx.shadowColor = '#ff0000';
+                ctx.shadowBlur = 10;
+                ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+                
+                // Windows
+                ctx.fillStyle = '#1e272e';
+                ctx.shadowBlur = 5;
+                ctx.fillRect(obstacle.x + 5, obstacle.y + 10, obstacle.width - 10, 15);
+            });
+        }
+        
+        // Draw coins
+        function drawCoins() {
+            coins.forEach(coin => {
+                if (!coin.collected) {
+                    ctx.fillStyle = '#ffd700';
+                    ctx.shadowColor = '#ffff00';
+                    ctx.shadowBlur = 15;
+                    ctx.beginPath();
+                    ctx.arc(coin.x + 10, coin.y + 10, 10, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Coin shine
+                    ctx.fillStyle = '#ffffff';
+                    ctx.shadowBlur = 5;
+                    ctx.beginPath();
+                    ctx.arc(coin.x + 6, coin.y + 6, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+        }
+        
+        // Draw road
+        function drawRoad() {
+            // Road background
+            ctx.fillStyle = '#2c3e50';
+            ctx.shadowBlur = 0;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Lane markings
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 5;
+            ctx.setLineDash([20, 30]);
+            
+            for (let i = 0; i < canvas.height; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(canvas.width / 2, (i + frameCount * 2) % canvas.height);
+                ctx.lineTo(canvas.width / 2, ((i + frameCount * 2) % canvas.height) + 30);
+                ctx.stroke();
+            }
+            
+            ctx.setLineDash([]);
+        }
+        
+        // Check collision
+        function checkCollision(rect1, rect2) {
+            return rect1.x < rect2.x + rect2.width &&
+                   rect1.x + rect1.width > rect2.x &&
+                   rect1.y < rect2.y + rect2.height &&
+                   rect1.y + rect1.height > rect2.y;
+        }
+        
+        // Update game
+        function update() {
+            if (!gameRunning) return;
+            
+            // Update nitro
+            if (nitroActive) {
+                nitroDuration--;
+                if (nitroDuration <= 0) {
+                    nitroActive = false;
+                }
+            }
+            
+            // Player movement
+            const currentSpeed = nitroActive ? player.nitroSpeed : player.speed;
+            
+            if (moving.up && player.y > 0) player.y -= currentSpeed;
+            if (moving.down && player.y < canvas.height - player.height) player.y += currentSpeed;
+            if (moving.left && player.x > 0) player.x -= currentSpeed;
+            if (moving.right && player.x < canvas.width - player.width) player.x += currentSpeed;
+            
+            // Create obstacles
+            if (Math.random() < 0.02) {
+                obstacles.push(createObstacle());
+            }
+            
+            // Create coins
+            if (Math.random() < 0.03) {
+                coins.push(createCoin());
+            }
+            
+            // Update obstacles
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                obstacles[i].y += obstacles[i].speed;
+                
+                // Check collision with player
+                if (checkCollision(player, obstacles[i])) {
+                    gameRunning = false;
+                    document.getElementById('gameStatus').innerHTML = '💥 GAME OVER';
+                }
+                
+                // Remove if off screen
+                if (obstacles[i].y > canvas.height) {
+                    obstacles.splice(i, 1);
+                }
+            }
+            
+            // Update coins
+            for (let i = coins.length - 1; i >= 0; i--) {
+                if (!coins[i].collected) {
+                    coins[i].y += coins[i].speed;
+                    
+                    // Check collection
+                    if (checkCollision(player, coins[i])) {
+                        coins[i].collected = true;
+                        score += 10;
+                        document.getElementById('score').textContent = score;
+                        
+                        if (score > highScore) {
+                            highScore = score;
+                            localStorage.setItem('carGameHighScore', highScore);
+                            document.getElementById('highScore').textContent = highScore;
+                        }
+                        
+                        setTimeout(() => {
+                            coins.splice(i, 1);
+                        }, 100);
+                        continue;
+                    }
+                    
+                    // Remove if off screen
+                    if (coins[i].y > canvas.height) {
+                        coins.splice(i, 1);
+                    }
+                }
+            }
+            
+            frameCount++;
+        }
+        
+        // Draw everything
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawRoad();
+            drawObstacles();
+            drawCoins();
+            drawPlayer();
+            
+            // Game over overlay
+            if (!gameRunning) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#e94560';
+                ctx.font = 'bold 30px Arial';
+                ctx.shadowBlur = 20;
+                ctx.textAlign = 'center';
+                ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2);
+                
+                ctx.fillStyle = 'white';
+                ctx.font = '20px Arial';
+                ctx.fillText('Score: ' + score, canvas.width / 2, canvas.height / 2 + 40);
+            }
+        }
+        
+        // Reset game
+        function resetGame() {
+            player.x = 200;
+            player.y = 500;
+            obstacles = [];
+            coins = [];
+            score = 0;
+            gameRunning = true;
+            nitroActive = false;
+            document.getElementById('score').textContent = '0';
+            document.getElementById('gameStatus').innerHTML = '▶️ Playing';
+        }
+        
+        // Game loop
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // Start game
+        gameLoop();
+        
+        // Prevent context menu on canvas
+        canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+        
+        // Prevent scrolling on arrow keys
+        window.addEventListener('keydown', (e) => {
+            if (e.key.startsWith('Arrow') || e.key === ' ') {
+                e.preventDefault();
+            }
+        }, false);
+    </script>
+</body>
+</html>
